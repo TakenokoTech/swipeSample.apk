@@ -22,7 +22,7 @@ public class RowAdapter extends BaseAdapter {
 
     GridView gridView;
     private LayoutInflater mLayoutInflater;
-    public Map<Integer, ViewHolder> viewHolderArray = new HashMap<>();
+    public Map<Integer, ViewHolder> viewHolderList = new HashMap<>();
 
     public ArrayList<Integer> mColorArray = new ArrayList(Arrays.asList(Color.GREEN));
     public ArrayList<String> mArray = new ArrayList(Arrays.asList(
@@ -40,32 +40,35 @@ public class RowAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View mConvertView, ViewGroup viewGroup) {
 
-        if (mConvertView == null) {
-            mConvertView = mLayoutInflater.inflate(R.layout.row_view, viewGroup, false);
+        // Holderを初期化
+        if(viewHolderList.get(position) == null) {
+            viewHolderList.put(position, new ViewHolder());
         }
-        if(viewHolderArray.get(position) == null) {
-            viewHolderArray.put(position, new ViewHolder());
-            viewHolderArray.get(position).rowView = mConvertView.findViewById(R.id.row_view);
-            viewHolderArray.get(position).rowText = mConvertView.findViewById(R.id.row_text);
-        }
-        viewHolderArray.put(position, viewHolderArray.get(position));
 
         //
-        viewHolderArray.get(position).rowText.setText(mArray.get(position));
+        mConvertView = mLayoutInflater.inflate(R.layout.row_view, viewGroup, false);
+        ViewHolder viewHolder = viewHolderList.get(position);
+        viewHolder.rowView = mConvertView.findViewById(R.id.row_view);
+        viewHolder.rowText = mConvertView.findViewById(R.id.row_text);
+        mConvertView.setTag(position);
+
+        // テキスト
+        viewHolder.rowText.setText(mArray.get(position));
 
         // 色を描画
-        if(viewHolderArray.get(position).isTouch) {
-            viewHolderArray.get(position).rowView.setBackgroundColor(Color.GRAY);
+        if(viewHolder.onTouch) {
+            viewHolder.rowView.setBackgroundColor(Color.GRAY);
         } else  {
-            viewHolderArray.get(position).rowView.setBackgroundColor(mColorArray.get(position % mColorArray.size()));
+            viewHolder.rowView.setBackgroundColor(mColorArray.get(position % mColorArray.size()));
         }
+
         return mConvertView;
     }
 
     @Override public int getCount() {
         return mArray.size();
     }
-    @Override public Object getItem(int position) { return viewHolderArray.get(position); }
+    @Override public Object getItem(int position) { return viewHolderList.get(position); }
     @Override public long getItemId(int position) {
         return position;
     }
@@ -73,6 +76,6 @@ public class RowAdapter extends BaseAdapter {
     static class ViewHolder {
         TextView rowText;
         View rowView;
-        boolean isTouch = false;
+        boolean onTouch = false;
     }
 }

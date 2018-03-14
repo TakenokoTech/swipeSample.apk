@@ -12,15 +12,15 @@ public class SwipeListener implements View.OnTouchListener {
 
     enum SwipeState {
         NONE,
-        SELECTING_MODE,
-        SLIDE_MODE,
+        SELECTING_MODE, /** 選択モード */
+        SLIDE_MODE,     /** スライドモード */
     }
 
     private Listener listener;
     static SwipeState state = SwipeState.NONE;
 
     /** フリック判定時の遊び */
-    private float DEFAULT_PLAY = 100f;
+    private float DEFAULT_PLAY = 80f;
     private float lastX = 0;
     private float lastY = 0;
 
@@ -45,13 +45,13 @@ public class SwipeListener implements View.OnTouchListener {
             case MotionEvent.ACTION_MOVE: touching(event); break;
         }
         return listener.onNextListener(event, state);
-        // return !(SwipeListener.state == SwipeListener.SwipeState.SLIDE_MODE);
     }
 
     private void touchStart(MotionEvent event) {
         lastX = event.getX();
         lastY = event.getY();
         MainActivity.customView.update(new PointF( lastX, lastY));
+        touching(event);
     }
 
     private void touchEnd(MotionEvent event) {
@@ -63,8 +63,6 @@ public class SwipeListener implements View.OnTouchListener {
         float currentX = event.getX();
         float currentY = event.getY();
 
-        // x -> y の順で判定しているので、斜めにフリックした場合はLeft,Rightのイベントの方が優先される
-        // Up,Downを優先したい場合は、条件判定の順序を入れ替えること
         if (currentX + DEFAULT_PLAY < lastX) {
             MainActivity.customView.update(new PointF( lastX, lastY));
             if(state == SwipeState.NONE) state = SwipeState.SELECTING_MODE;

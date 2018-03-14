@@ -32,7 +32,7 @@ public class CustomView extends View {
             case SELECTING_MODE: mPaint.setColor(Color.RED); break;
             case SLIDE_MODE: mPaint.setColor(Color.BLUE); break;
         }
-        canvas.drawCircle(  point.x, point.y, 100, mPaint);
+        canvas.drawCircle(  point.x, point.y, 80f, mPaint);
     }
 
     void update (PointF point) {

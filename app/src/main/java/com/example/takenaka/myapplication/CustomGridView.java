@@ -22,7 +22,7 @@ public class CustomGridView extends GridView {
         for (int index = 0; index < childCount; index++) {
             getChildAt(index).getHitRect(rect);
             if (rect.contains(x, y)) {
-                return index;
+                return (int)getChildAt(index).getTag();
             }
         }
         return -1;

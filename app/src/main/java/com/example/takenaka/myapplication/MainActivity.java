@@ -11,6 +11,7 @@ public class MainActivity extends AppCompatActivity {
     static CustomView customView;
 
     static boolean selectMode = false;
+    static int startIndex = -1;
     static int prevIndex = -1;
 
     @Override
@@ -35,15 +36,23 @@ public class MainActivity extends AppCompatActivity {
 
             @Override public boolean onNextListener(MotionEvent motionEvent, SwipeListener.SwipeState mode) {
                 int index = gridView.getTouchChildIndex((int)motionEvent.getX(), (int)motionEvent.getY());
-                Log.i("TOUCHING", "position = " + index);
-                if(rowView.viewHolderArray.get(index) != null && mode == SwipeListener.SwipeState.SELECTING_MODE && prevIndex != index) {
-                    rowView.viewHolderArray.get(index).isTouch = !rowView.viewHolderArray.get(index).isTouch;
+                Log.i("^^^", "index = " + index + ", prev = " + prevIndex);
+                boolean isTouching = (motionEvent.getAction() == MotionEvent.ACTION_UP) && (startIndex == index);
+                boolean swipeTouching = (mode == SwipeListener.SwipeState.SELECTING_MODE) && (prevIndex != index);
+                if(isTouching || swipeTouching) {
+                    if(rowView.viewHolderList.get(index) != null ) {
+                        rowView.viewHolderList.get(index).onTouch = !rowView.viewHolderList.get(index).onTouch;
+                        rowView.notifyDataSetChanged();
+                        gridView.invalidateViews();
+                    }
                     prevIndex = index;
                 }
-                if(mode == SwipeListener.SwipeState.NONE) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    startIndex = index;
+                }
+                if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     prevIndex = -1;
                 }
-                rowView.notifyDataSetChanged();
                 return SwipeListener.state != SwipeListener.SwipeState.SLIDE_MODE;
             }
         }));
