@@ -3,17 +3,22 @@ package com.example.takenaka.myapplication;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private GridView gridView;
-    public static CustomView customView;
+    /** 検証用の画面 */
+    public static DebugView debugView;
 
+    /** */
+    private GridView gridView;
+
+    /** タッチ開始時にタップしていたGridView内のView要素のTag */
     private static int startIndex = -1;
+
+    /** 前回タッチしたGridView内のView要素のTag */
     private static int prevIndex = -1;
 
     @Override
@@ -22,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // viewの初期化
-        customView = findViewById(R.id.custom_view);
+        debugView = findViewById(R.id.debug_view);
         gridView = findViewById(R.id.grid_view);
         setupGridView();
     }

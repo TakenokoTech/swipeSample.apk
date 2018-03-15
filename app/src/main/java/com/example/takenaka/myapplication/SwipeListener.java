@@ -76,7 +76,7 @@ public class SwipeListener implements View.OnTouchListener {
             default:
                 break;
         }
-        MainActivity.customView.update(lastPoint, new PointF(event.getX(), event.getY()), mode);
+        MainActivity.debugView.update(lastPoint, new PointF(event.getX(), event.getY()), mode);
         return listener.onTouch(view, event, mode);
     }
 

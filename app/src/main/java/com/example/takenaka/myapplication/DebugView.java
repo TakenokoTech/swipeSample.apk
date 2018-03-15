@@ -20,7 +20,7 @@ import java.util.List;
  *  - 選択モードは赤
  *  - スワイプモードは青
  */
-public class CustomView extends View {
+public class DebugView extends View {
 
     private Paint mPaint = new Paint();
     private Paint mPaint2 = new Paint();
@@ -34,7 +34,7 @@ public class CustomView extends View {
     /** リスナー状態 */
     private SwipeListener.SwipeMode mode = SwipeListener.SwipeMode.NONE;
 
-    public CustomView(Context context, AttributeSet attrs) {
+    public DebugView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mPaint2.setColor(Color.YELLOW);
     }
