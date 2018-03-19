@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
     tools:context="com.example.takenaka.myapplication.MainActivity">
 
-    <com.example.takenaka.myapplication.SwipeGridView
+    <tech.takenoko.swipegridview.SwipeGridView
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +19,7 @@
         android:horizontalSpacing="2dp"
         android:gravity="center"/>
 
-    <com.example.takenaka.myapplication.DebugView
+    <tech.takenoko.swipegridview.debug.DebugView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/debug_view"/>

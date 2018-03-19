@@ -77,17 +77,16 @@ public class RowAdapter extends BaseAdapter {
         } else  {
             viewHolder.rowView.setBackgroundColor(Color.GREEN);
         }
-
         return convertView;
     }
 
     /**
      * 選択状態を反転させる。
-     * @param position
+     * @param tag
      */
-    public void invertSelected(final int position) {
-        if(viewHolderList.get(position) != null) {
-            viewHolderList.get(position).isSelected = !viewHolderList.get(position).isSelected;
+    public void invertSelected(final Object tag) {
+        if(viewHolderList.get(tag) != null) {
+            viewHolderList.get(tag).isSelected = !viewHolderList.get(tag).isSelected;
             notifyDataSetChanged();
         }
     }

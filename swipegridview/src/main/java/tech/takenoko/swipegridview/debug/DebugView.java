@@ -1,4 +1,4 @@
-package com.example.takenaka.myapplication;
+package tech.takenoko.swipegridview.debug;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,10 +7,18 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import tech.takenoko.swipegridview.SwipeListener;
+import tech.takenoko.swipegridview.listener.SwipeMode;
 
 /**
  * Created by takenaka on 2018/03/14.
@@ -22,21 +30,26 @@ import java.util.List;
  */
 public class DebugView extends View {
 
+    // Model
+    DebugModel debugModel = DebugModel.getInstance();
+
     private Paint mPaint = new Paint();
     private Paint mPaint2 = new Paint();
-
-    /** 閾値判定の座標 */
-    private PointF point = new PointF(0, 0);
-
-    /** タップ判定した座標 */
-    private List<PointF> decisionPointList = new ArrayList<>();
-
-    /** リスナー状態 */
-    private SwipeListener.SwipeMode mode = SwipeListener.SwipeMode.NONE;
 
     public DebugView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mPaint2.setColor(Color.YELLOW);
+
+        ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+        ses.scheduleAtFixedRate(invalidateTask(), 0L, 100L, TimeUnit.MILLISECONDS);
+    }
+
+    private Runnable invalidateTask() {
+        return new Runnable() {
+            @Override public void run() {
+                invalidate();
+            }
+        };
     }
 
     /**
@@ -46,11 +59,12 @@ public class DebugView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        Log.d("^^^^", "sizwe = " +DebugModel.getInstance().getDecisionPointList().size());
 
         canvas.drawColor(Color.argb(0, 0, 0, 0));
-        if(point.x == 0 && point.y == 0) return;
+        if(DebugModel.getInstance().getPoint().x == 0 && DebugModel.getInstance().getPoint().y == 0) return;
 
-        switch (mode) {
+        switch (DebugModel.getInstance().getMode()) {
             case NONE:
                 mPaint.setColor(Color.BLACK);
                 break;
@@ -65,30 +79,10 @@ public class DebugView extends View {
                 mPaint.setColor(Color.BLUE);
                 break;
         }
-        canvas.drawCircle(  point.x, point.y, 80f, mPaint);
+        canvas.drawCircle(  DebugModel.getInstance().getPoint().x, DebugModel.getInstance().getPoint().y, SwipeListener.DEFAULT_PLAY, mPaint);
 
-        for(PointF p : decisionPointList) {
+        for(PointF p : DebugModel.getInstance().getDecisionPointList()) {
             canvas.drawCircle(  p.x, p.y, 10f, mPaint2);
         }
     }
-
-    /**
-     * 表示情報の更新
-     * @param point 閾値判定の座標
-     * @param decisionPoint タップ判定が行われた座標
-     * @param mode リスナーの状態
-     */
-    void update (PointF point, PointF decisionPoint, SwipeListener.SwipeMode mode) {
-        this.point = point;
-        this.mode = mode;
-
-        if(mode == SwipeListener.SwipeMode.SELECTION_MODE) {
-            decisionPointList.add(decisionPoint);
-        } else {
-            decisionPointList = new ArrayList<>();
-        }
-
-        invalidate();
-    }
-
 }

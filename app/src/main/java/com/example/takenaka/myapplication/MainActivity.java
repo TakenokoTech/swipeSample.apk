@@ -1,19 +1,24 @@
 package com.example.takenaka.myapplication;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.GridView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import tech.takenoko.swipegridview.SwipeGridView;
+import tech.takenoko.swipegridview.listener.OnSingleTouchListener;
+import tech.takenoko.swipegridview.listener.OnSwipeTouchListener;
+
 public class MainActivity extends AppCompatActivity {
 
-    /** 検証用の画面 */
-    public static DebugView debugView;
+    /** スワイプ選択機能付きGridView */
+    private SwipeGridView swipeGridView;
+
+    /** GridViewのアダプター */
+    private RowAdapter rowAdapter;
 
     /** サンプル */
     public final static ArrayList<String> msampleArray = new ArrayList(Arrays.asList(
@@ -33,6 +38,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // viewの初期化
-        debugView = findViewById(R.id.debug_view);
+        swipeGridView = findViewById(R.id.grid_view);
+
+        // GridViewにAdapterをセットする。
+        rowAdapter = new RowAdapter(this);
+        swipeGridView.setAdapter(rowAdapter);
+        swipeGridView.setOnSingleTouching(new OnSingleTouchListener() {
+            @Override
+            public void onTouch(View view, MotionEvent motionEvent, Object tag) {
+                rowAdapter.invertSelected(tag);
+            }
+        });
+        swipeGridView.setOnSwipeTouching(new OnSwipeTouchListener() {
+            @Override
+            public void onTouch(View view, MotionEvent motionEvent, Object tag) {
+                rowAdapter.invertSelected(tag);
+            }
+        });
+
     }
 }

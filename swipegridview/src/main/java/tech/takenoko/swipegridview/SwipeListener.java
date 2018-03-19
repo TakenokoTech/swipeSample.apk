@@ -1,48 +1,28 @@
-package com.example.takenaka.myapplication;
+package tech.takenoko.swipegridview;
 
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
 
+import tech.takenoko.swipegridview.debug.DebugModel;
+import tech.takenoko.swipegridview.debug.DebugView;
+import tech.takenoko.swipegridview.listener.NextListener;
+import tech.takenoko.swipegridview.listener.SwipeMode;
+
 /**
  * Created by takenaka on 2018/03/14.
  */
 public class SwipeListener implements View.OnTouchListener {
 
-    /**
-     * リスナー状態
-     */
-    public enum SwipeMode {
-        /** 未選択 */
-        NONE,
-        /** シングル選択（未選択状態でタッチ終了） */
-        SINGLE_TOUCH,
-        /** 選択モード（横スワイプ） */
-        SELECTION_MODE,
-        /** 選択モード終了 */
-        SELECTION_MODE_END,
-        /** スライドモード（縦スワイプ） */
-        SLIDE_MODE,
-        /** スライドモード終了 */
-        SLIDE_MODE_END,
-    }
-
-    /**
-     * 後続のリスナー登録用のインターフェース
-     */
-    interface Listener {
-        boolean onTouch(View view, MotionEvent motionEvent, SwipeMode mode);
-    }
+    /** フリック判定時の遊び */
+    public final static float DEFAULT_PLAY = 50f;
 
     /** 現在のスワイプ状態 */
     private SwipeMode mode = SwipeMode.NONE;
 
     /** 後続リスナー */
-    private Listener listener;
-
-    /** フリック判定時の遊び */
-    private final static float DEFAULT_PLAY = 80f;
+    private NextListener listener;
 
     /** 閾値判定の座標 */
     private PointF lastPoint = new PointF(0, 0);
@@ -51,7 +31,7 @@ public class SwipeListener implements View.OnTouchListener {
      * コンストラクタ
      * @param nextListener 後続のリスナー
      */
-    SwipeListener(@NonNull Listener nextListener) {
+    SwipeListener(@NonNull NextListener nextListener) {
         this.listener = nextListener;
     }
 
@@ -76,7 +56,7 @@ public class SwipeListener implements View.OnTouchListener {
             default:
                 break;
         }
-        MainActivity.debugView.update(lastPoint, new PointF(event.getX(), event.getY()), mode);
+        DebugModel.getInstance().update(lastPoint, new PointF(event.getX(), event.getY()), mode);
         return listener.onTouch(view, event, mode);
     }
 
