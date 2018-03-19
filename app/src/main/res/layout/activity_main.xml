@@ -8,7 +8,7 @@
     android:descendantFocusability="blocksDescendants"
     tools:context="com.example.takenaka.myapplication.MainActivity">
 
-    <GridView
+    <com.example.takenaka.myapplication.SwipeGridView
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

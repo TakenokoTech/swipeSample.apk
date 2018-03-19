@@ -1,5 +1,6 @@
 package com.example.takenaka.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -31,17 +32,6 @@ public class RowAdapter extends BaseAdapter {
         /** 選択状態 */
         boolean isSelected = false;
     }
-
-    private final static ArrayList<String> mArray = new ArrayList(Arrays.asList(
-            "00", "01", "02", "03", "04", "05", "06", "07", "08", "09",
-            "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
-            "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
-            "30", "31", "32", "33", "34", "35", "36", "37", "38", "39",
-            "40", "41", "42", "43", "44", "45", "46", "47", "48", "49",
-            "50", "51", "52", "53", "54", "55", "56", "57", "58", "59",
-            "60", "61", "62", "63", "64", "65", "66", "67", "68", "69",
-            "70", "71", "72", "73", "74", "75", "76", "77", "78", "79"
-    ));
 
     private LayoutInflater mLayoutInflater;
 
@@ -79,7 +69,7 @@ public class RowAdapter extends BaseAdapter {
         convertView.setTag(position);
 
         // テキスト変更
-        viewHolder.rowText.setText(mArray.get(position));
+        viewHolder.rowText.setText(MainActivity.msampleArray.get(position));
 
         // 選択状態かで色を変更
         if(viewHolder.isSelected) {
@@ -103,7 +93,7 @@ public class RowAdapter extends BaseAdapter {
     }
 
     @Override public int getCount() {
-        return mArray.size();
+        return MainActivity.msampleArray.size();
     }
 
     @Override public Object getItem(int position) {
