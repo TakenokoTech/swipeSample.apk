@@ -4,21 +4,16 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import tech.takenoko.swipegridview.SwipeListener;
-import tech.takenoko.swipegridview.listener.SwipeMode;
 
 /**
  * Created by takenaka on 2018/03/14.
@@ -29,9 +24,6 @@ import tech.takenoko.swipegridview.listener.SwipeMode;
  *  - スワイプモードは青
  */
 public class DebugView extends View {
-
-    // Model
-    DebugModel debugModel = DebugModel.getInstance();
 
     private Paint mPaint = new Paint();
     private Paint mPaint2 = new Paint();
@@ -59,18 +51,17 @@ public class DebugView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.d("^^^^", "sizwe = " +DebugModel.getInstance().getDecisionPointList().size());
 
         canvas.drawColor(Color.argb(0, 0, 0, 0));
-        if(DebugModel.getInstance().getPoint().x == 0 && DebugModel.getInstance().getPoint().y == 0) return;
+        if(DebugModel.getPoint().x == 0 && DebugModel.getPoint().y == 0) return;
 
-        switch (DebugModel.getInstance().getMode()) {
+        switch (DebugModel.getMode()) {
             case NONE:
                 mPaint.setColor(Color.BLACK);
                 break;
 
-            case SELECTION_MODE:
-            case SELECTION_MODE_END:
+            case SWIPE_MODE:
+            case SWIPE_MODE_END:
                 mPaint.setColor(Color.RED);
                 break;
 
@@ -78,10 +69,14 @@ public class DebugView extends View {
             case SLIDE_MODE_END:
                 mPaint.setColor(Color.BLUE);
                 break;
-        }
-        canvas.drawCircle(  DebugModel.getInstance().getPoint().x, DebugModel.getInstance().getPoint().y, SwipeListener.DEFAULT_PLAY, mPaint);
 
-        for(PointF p : DebugModel.getInstance().getDecisionPointList()) {
+            default:
+                mPaint.setColor(Color.WHITE);
+                break;
+        }
+        canvas.drawCircle(  DebugModel.getPoint().x, DebugModel.getPoint().y, SwipeListener.DEFAULT_PLAY, mPaint);
+
+        for(PointF p : DebugModel.getDecisionPointList()) {
             canvas.drawCircle(  p.x, p.y, 10f, mPaint2);
         }
     }

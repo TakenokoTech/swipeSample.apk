@@ -1,12 +1,11 @@
 package tech.takenoko.swipegridview.debug;
 
 import android.graphics.PointF;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import tech.takenoko.swipegridview.listener.SwipeMode;
+import tech.takenoko.swipegridview.io.SwipeMode;
 
 /**
  * Created by takenaka on 2018/03/19.
@@ -27,10 +26,7 @@ public class DebugModel {
 
     /** シングルトン */
     public static DebugModel getInstance() {
-        if(inst == null) {
-            inst = new DebugModel();
-        }
-        return inst;
+        return (inst == null) ? inst = new DebugModel() : inst;
     }
 
     /**
@@ -41,30 +37,40 @@ public class DebugModel {
      */
      public void update (PointF p, PointF decisionPoint, SwipeMode m) {
 
-         Log.d("^^^", m.toString());
          getInstance().point = p;
          getInstance().mode = m;
 
          if(getInstance().decisionPointList == null) {
              getInstance().decisionPointList = new ArrayList<>();
          }
-         if(mode == SwipeMode.SELECTION_MODE) {
+         if(mode == SwipeMode.SWIPE_MODE) {
             getInstance().decisionPointList.add(decisionPoint);
          } else {
             getInstance().decisionPointList = new ArrayList<>();
          }
     }
 
-
-    public PointF getPoint() {
+    /**
+     * 閾値判定の座標を取得
+     * @return
+     */
+    public static PointF getPoint() {
         return getInstance().point;
     }
 
-    public List<PointF> getDecisionPointList() {
+    /**
+     *　タップ判定した座標を取得
+     * @return
+     */
+    public static List<PointF> getDecisionPointList() {
         return getInstance().decisionPointList;
     }
 
-    public SwipeMode getMode() {
+    /**
+     * リスナー状態を取得
+     * @return
+     */
+    public static SwipeMode getMode() {
         return getInstance().mode;
     }
 }

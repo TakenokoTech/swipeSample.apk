@@ -6,9 +6,8 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import tech.takenoko.swipegridview.debug.DebugModel;
-import tech.takenoko.swipegridview.debug.DebugView;
-import tech.takenoko.swipegridview.listener.NextListener;
-import tech.takenoko.swipegridview.listener.SwipeMode;
+import tech.takenoko.swipegridview.io.NextListener;
+import tech.takenoko.swipegridview.io.SwipeMode;
 
 /**
  * Created by takenaka on 2018/03/14.
@@ -45,13 +44,13 @@ public class SwipeListener implements View.OnTouchListener {
     public boolean onTouch(View view, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                touchStart(event);
+                mode = touchStart(event);
                 break;
             case MotionEvent.ACTION_MOVE:
-                touching(event);
+                mode = touching(event);
                 break;
             case MotionEvent.ACTION_UP:
-                touchEnd(event);
+                mode = touchEnd(event);
                 break;
             default:
                 break;
@@ -62,54 +61,59 @@ public class SwipeListener implements View.OnTouchListener {
 
     /**
      * タップ開始時にタップの閾値判定で使う座標を取得する。
-     * @param event リスナー状態
+     * @param event タップイベント
+     * @return リスナー状態
      */
-    private void touchStart(MotionEvent event) {
+    private SwipeMode touchStart(MotionEvent event) {
         lastPoint = new PointF(event.getX(), event.getY());
-        mode = SwipeMode.NONE;
-        touching(event);
+        return SwipeMode.NONE;
     }
 
     /**
      * タップ終了時はリスナー状態の終了判定を行う。
-     * @param event リスナー状態
+     * @param event タップイベント
+     * @return リスナー状態
      */
-    private void touchEnd(MotionEvent event) {
+    private SwipeMode touchEnd(MotionEvent event) {
         switch (mode) {
-            case SELECTION_MODE:
-                mode = SwipeMode.SELECTION_MODE_END;
-                break;
-            case SLIDE_MODE:
-                mode = SwipeMode.SLIDE_MODE_END;
-                break;
-            case NONE:
-                mode = SwipeMode.SINGLE_TOUCH;
-                break;
-            default:
-                mode = SwipeMode.NONE;
-                break;
+            // スワイプ選択開始
+            case SWIPE_MODE:    return SwipeMode.SWIPE_MODE_END;
+            case SLIDE_MODE:    return SwipeMode.SLIDE_MODE_END;
+            case NONE:          return SwipeMode.SINGLE_TOUCH;
+            default:            return SwipeMode.NONE;
         }
     }
 
     /**
      * タップ中は未選択状態の場合は適宜閾値判定を行う。
-     * @param event リスナー状態
+     * @param event タップイベント
+     * @return リスナー状態
      */
-    private void touching(MotionEvent event) {
+    private SwipeMode touching(MotionEvent event) {
         float currentX = event.getX();
         float currentY = event.getY();
 
         if (currentX + DEFAULT_PLAY < lastPoint.x) {
-            if(mode == SwipeMode.NONE) mode = SwipeMode.SELECTION_MODE;
-
+            // スワイプ選択開始
+            if(mode == SwipeMode.NONE) return SwipeMode.SWIPE_MODE_START;
+            // スワイプ選択中
+            else if(mode == SwipeMode.SWIPE_MODE_START) return SwipeMode.SWIPE_MODE;
         } else if (lastPoint.x < currentX - DEFAULT_PLAY) {
-            if(mode == SwipeMode.NONE) mode = SwipeMode.SELECTION_MODE;
-
+            // スワイプ選択開始
+            if(mode == SwipeMode.NONE) return SwipeMode.SWIPE_MODE_START;
+            // スワイプ選択中
+            else if(mode == SwipeMode.SWIPE_MODE_START) return SwipeMode.SWIPE_MODE;
         } else if (currentY + DEFAULT_PLAY < lastPoint.y) {
-            if(mode == SwipeMode.NONE) mode = SwipeMode.SLIDE_MODE;
-
+            // スライド開始
+            if(mode == SwipeMode.NONE) return SwipeMode.SLIDE_MODE_START;
+            // スライド中
+            else if(mode == SwipeMode.SLIDE_MODE_START) return SwipeMode.SLIDE_MODE;
         } else if (lastPoint.y < currentY - DEFAULT_PLAY) {
-            if(mode == SwipeMode.NONE) mode = SwipeMode.SLIDE_MODE;
+            // スライド開始
+            if(mode == SwipeMode.NONE) return SwipeMode.SLIDE_MODE_START;
+            // スライド中
+            else if(mode == SwipeMode.SLIDE_MODE_START) return SwipeMode.SLIDE_MODE;
         }
+        return mode;
     }
 }

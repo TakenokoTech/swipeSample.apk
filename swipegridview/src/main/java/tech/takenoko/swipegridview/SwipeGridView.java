@@ -9,10 +9,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridView;
 
-import tech.takenoko.swipegridview.listener.NextListener;
-import tech.takenoko.swipegridview.listener.OnSingleTouchListener;
-import tech.takenoko.swipegridview.listener.OnSwipeTouchListener;
-import tech.takenoko.swipegridview.listener.SwipeMode;
+import tech.takenoko.swipegridview.io.NextListener;
+import tech.takenoko.swipegridview.io.OnSingleTouchListener;
+import tech.takenoko.swipegridview.io.OnSwipeTouchListener;
+import tech.takenoko.swipegridview.io.SwipeMode;
 
 /**
  * Created by takenaka on 2018/03/16.
@@ -56,22 +56,26 @@ public class SwipeGridView extends GridView {
 
                 // シングル選択の判定（タップ開始からタップ終了まで同じセル内のみタップしていた。）
                 boolean singleTouching = (mode == SwipeMode.SINGLE_TOUCH) && checkTag(startTag, tag);
-
-                // スワイプ選択の判定（選択モードで前回タップしたセル以外をタップしている。）
-                boolean swipeTouching = (mode == SwipeMode.SELECTION_MODE) && !checkTag(prevTag, tag);
-
-                // シングル選択
                 if (singleTouching) {
                     if(singleTouchListener != null) singleTouchListener.onTouch(view, motionEvent, tag);
-                    invalidateViews();
                     prevTag = tag;
+                    invalidateViews();
                 }
 
-                // スワイプ選択
+                // スワイプ開始
+                boolean startSingleTouching = (mode == SwipeMode.SWIPE_MODE_START);
+                if(startSingleTouching) {
+                    if(swipeTouchListener != null) swipeTouchListener.onTouch(view, motionEvent, startTag);
+                    prevTag = startTag;
+                    invalidateViews();
+                }
+
+                // スワイプ選択の判定（選択モードで前回タップしたセル以外をタップしている。）
+                boolean swipeTouching = (mode == SwipeMode.SWIPE_MODE) && !checkTag(prevTag, tag);
                 if (swipeTouching) {
                     if(swipeTouchListener != null) swipeTouchListener.onTouch(view, motionEvent, tag);
-                    invalidateViews();
                     prevTag = tag;
+                    invalidateViews();
                 }
 
                 // タップ開始の時は、開始時のview番号を取得する。
@@ -86,7 +90,7 @@ public class SwipeGridView extends GridView {
                 }
 
                 // スライドモードの場合はグリッドをスライド可能にする。
-                return mode != SwipeMode.SLIDE_MODE;
+                return (mode != SwipeMode.SLIDE_MODE);
             }
         });
     }

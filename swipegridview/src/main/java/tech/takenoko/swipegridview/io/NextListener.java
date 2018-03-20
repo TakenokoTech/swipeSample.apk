@@ -1,4 +1,4 @@
-package tech.takenoko.swipegridview.listener;
+package tech.takenoko.swipegridview.io;
 
 import android.view.MotionEvent;
 import android.view.View;

@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import tech.takenoko.swipegridview.SwipeGridView;
-import tech.takenoko.swipegridview.listener.OnSingleTouchListener;
-import tech.takenoko.swipegridview.listener.OnSwipeTouchListener;
+import tech.takenoko.swipegridview.io.OnSingleTouchListener;
+import tech.takenoko.swipegridview.io.OnSwipeTouchListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,6 +55,5 @@ public class MainActivity extends AppCompatActivity {
                 rowAdapter.invertSelected(tag);
             }
         });
-
     }
 }
